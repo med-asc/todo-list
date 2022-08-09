@@ -2,11 +2,15 @@ class Project {
     list = [];
 
     constructor(title) {
-        this.title = title;
+        this._title = title;
     }
 
     addToList(obj) {
         this.list.push(obj);
+    }
+
+    get title() {
+        return this._title;
     }
     
     get list() {

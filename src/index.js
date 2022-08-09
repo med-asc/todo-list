@@ -1,8 +1,10 @@
 import Todo from './modules/todo';
-import Project from './modules/project'
+import Project from './modules/project';
 import './style/style.css';
+import UserAvatar from './asset/img/user.png';
 
-const p1 = new Project('Project 1');
-const n1 = new Todo('Important stuff', 'Have to do some important stuff...');
-p1.addToList(n1);
-console.log(p1.list);
+// Add the user avatar image to our existing user-div.
+const avatarElement = document.querySelector('.user');
+const myIcon = new Image();
+myIcon.src = UserAvatar;
+avatarElement.appendChild(myIcon);
