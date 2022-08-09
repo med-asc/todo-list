@@ -1,5 +1,5 @@
 :root {
-    --color-bg: rgb(23 195 178);
+    --color-blue-l: rgb(23 195 178);
     --color-white: rgb(254 249 239);
     --color-yellow: rgb(255 203 119);
     --color-blue: rgb(34 124 157);
@@ -35,6 +35,38 @@ body {
     box-shadow: 4px 4px 13px 1px rgb(0 0 0 / 20%);
 }
 
+.nav-start {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    height: 100%;
+}
+
+.project {
+    list-style: none;
+    display: flex;
+}
+
+.project a {
+    padding: 1.3rem;
+    color: var(--text-white);
+    text-decoration: none;
+    display: block;
+}
+
+.project a:hover {
+    background-color: var(--color-yellow);
+    color: var(--text-black);
+}
+
+.project .active {
+    background-color: var(--color-white);
+}
+
+.project .active a {
+    color: var(--text-blue);
+}
+
 .logo {
     display: flex;
     gap: 8px;
@@ -53,4 +85,21 @@ body {
 
 .user img {
     height: 50px;
+}
+
+.btn {
+    padding: 0.6rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.btn-project {
+    background-color: var(--color-blue-l);
+    color: var(--text-black);
+}
+
+.btn-project:hover {
+    background-color: rgb(33, 218, 200);
 }

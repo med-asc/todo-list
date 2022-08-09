@@ -3,10 +3,15 @@ class Project {
 
     constructor(title) {
         this._title = title;
+        this._id = idCounter();
     }
 
     addToList(obj) {
         this.list.push(obj);
+    }
+
+    get id() {
+        return this._id;
     }
 
     get title() {
@@ -16,6 +21,12 @@ class Project {
     get list() {
         return this.list;
     }
+}
+
+let id = 0;
+function idCounter() {
+    ++id
+    return id; 
 }
 
 
