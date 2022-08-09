@@ -14,8 +14,20 @@
     margin: 0;
 }
 
-html, body {
-    height: 100vh;
+label, 
+input {
+    display: block;
+}
+
+label {
+    margin-bottom: 8px;
+}
+
+input {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
 }
 
 body {
@@ -93,6 +105,11 @@ body {
     cursor: pointer;
     border-radius: 6px;
     font-weight: 600;
+    background: var(--color-yellow);
+}
+
+.btn:hover {
+    background-color: rgb(252, 211, 144);
 }
 
 .btn-project {
@@ -102,4 +119,26 @@ body {
 
 .btn-project:hover {
     background-color: rgb(33, 218, 200);
+}
+
+main {
+    margin-top: 24px;
+    display: grid;
+    justify-items: center;
+}
+
+.container {
+    padding: 24px;
+    background-color: var(--text-white);
+}
+
+.container h2 {
+    color: var(--color-blue);
+    margin-bottom: 1rem;
+}
+
+.container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }

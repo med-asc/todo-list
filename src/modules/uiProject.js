@@ -1,3 +1,5 @@
+import Project from "./project";
+
 // Add          | Adds project to navigation
 // SetActive    | Sets project as active in navigation
 const uiProject = {
@@ -18,8 +20,11 @@ const uiProject = {
     setActive: function(obj) {
         let id = document.querySelector(`.project li[data-id="${obj.id}"]`);
         id.classList.add('active');
+    },
+    create: function(title) {
+        const n = new Project(title);
+        this.add(n);
     }
-
 }
 
 export default uiProject;
