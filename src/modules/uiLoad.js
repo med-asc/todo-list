@@ -1,81 +1,108 @@
-import uiProject from "./uiProject";
+import { createHtml } from "./htmlGen";
+import Project from "./project";
 
 // Creates elements that are required for the page
-const uiPageLoad = {
+const uiLoad = {
+    projectList: [],
     init: function() {
         this.cacheDoom();
-        this.createProject();
+        this.showNav();
     },
     cacheDoom: function() {
-        this.container = document.querySelector('.nav-start');
-        this.body = document.querySelector('#mainContent .container');
-        this.btnProject = document.querySelector('.btn-project');
+        this.pageHeader = document.querySelector('.nav-start');
+        this.pageBody = document.querySelector('#mainContent .container');
     },
-    bindEvents: function() {
-        this.btnProject.addEventListener('click', () => {
-            this.projectForm();
+    showNav: function() {
+        let ul = createHtml({type: 'ul', class: 'project'});
+        let nav = createHtml({type: 'nav'});
+        let btn = createHtml({type: 'button', class: 'btn btn-project', text: 'Add project'});
+
+        nav.appendChild(ul);
+        this.pageHeader.appendChild(nav);
+        this.pageHeader.appendChild(btn);
+
+        this.showFormEvent();
+    },
+    showFormEvent: function() {
+        let btn = document.querySelector('.btn-project');
+        btn.addEventListener('click', () => {
+            this.showForm();
         });
     },
-    createProject: function() {
-        let nav = document.createElement('nav');
-        let navUl = document.createElement('ul');
-        navUl.classList.add('project');
-        nav.appendChild(navUl);
+    showForm: function() {
+        this.pageBody.innerHTML = '';
+        // Create div header
+        let divHead = createHtml({type: 'div', class: 'pageHeader-heading'});
+        let h2Head = createHtml({type: 'h2', text: 'Add new Project'});
+        divHead.appendChild(h2Head);
+        this.pageBody.appendChild(divHead);
 
-        let btnAdd = document.createElement('button');
-        btnAdd.classList.add('btn', 'btn-project');
-        btnAdd.textContent = 'Add project';
-        
-        this.container.appendChild(nav);
-        this.container.appendChild(btnAdd);
-        this.cacheDoom();
-        this.bindEvents();
+        // form
+        let form = createHtml({type: 'form', attr: [['action', '']]});
+        let formDiv = createHtml({type: 'div'});
+        let label = createHtml({type: 'label', attr: [['for', 'projectTitle']], text: 'Add new Project'});
+        let input = createHtml({type: 'input', attr: [['type', 'text'], ['name', 'projectTitle'], ['id', 'projectTitle']]});
+        let subBtn = createHtml({type: 'button', text: 'Create Project', class: 'btn', attr: [['id', 'submitProject']]})
+        formDiv.appendChild(label);
+        formDiv.appendChild(input);
+        form.appendChild(formDiv);
+        form.appendChild(subBtn);
+        this.pageBody.appendChild(form);
+        this.submitForm();
     },
-    projectForm: function() {
-        this.body.innerHTML = '';
-        let heading = document.createElement('div');
-        heading.classList.add('container-heading');
-        let title = document.createElement('h2');
-        title.textContent = 'Add new Project';
-
-        heading.appendChild(title);
-        this.body.appendChild(heading);
-
-        let form = document.createElement('form');
-        form.setAttribute('action', '');
-        let formRow1 = document.createElement('div');
-        let titleLabel = document.createElement('label');
-        titleLabel.setAttribute('for', 'projectTitle');
-        titleLabel.textContent = 'Add new Project';
-        let titleInput = document.createElement('input');
-        titleInput.setAttribute('type', 'text');
-        titleInput.setAttribute('name', 'projectTitle');
-        titleInput.setAttribute('id', 'projectTitle');
-
-        let formBtn = document.createElement('button');
-        formBtn.textContent = 'Create Project';
-        formBtn.classList.add('btn');
-        formBtn.setAttribute('id', 'submitProject');
-
-        formRow1.appendChild(titleLabel);
-        formRow1.appendChild(titleInput);
-        form.appendChild(formRow1);
-        form.appendChild(formBtn);
-
-        this.body.appendChild(form);
-        this.cacheDoom();
-        this.bindEvents();
-        this.projectSubmit();
-    },
-    projectSubmit: function() {
-        const btnSubmitProject = document.querySelector('#submitProject');
-        btnSubmitProject.addEventListener('click', (e) => {
+    submitForm: function() {
+        let subBtn = document.querySelector('#submitProject');
+        subBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const titleValue = document.querySelector('#projectTitle').value;
-            uiProject.create(titleValue);
-            this.body.innerHTML = '';
+            this.create(document.querySelector('#projectTitle').value);
+            this.pageBody.innerHTML = '';
         });
+    },
+    create: function(title) {
+        let newProject = new Project(title);
+        this.projectList.push(newProject);
+        this.showProject(newProject);
+    },
+    showProject: function(obj) {
+        let navUl = document.querySelector('.project');
+        let li = createHtml({type: 'li', attr: [['data-id', obj.id]], class: 'nav-item'});
+        let a = createHtml({type: 'a', attr: [['href', '#']], text: obj.title});
+        li.appendChild(a);
+        navUl.appendChild(li);
+
+        this.navigationEvent();
+    },
+    navigationEvent: function() {
+        let navItems = document.querySelectorAll('.project li');
+        navItems.forEach(link => {
+            link.addEventListener('click', () => {
+                let obj = this.getProjectByID(link.getAttribute('data-id'));
+                this.setActive(obj);
+                this.showPage(obj);
+            });
+        });
+    },
+    setActive: function(obj) {
+        let currentActive = document.querySelector('.active');
+        if (currentActive) currentActive.classList.remove('active');
+
+        let target = document.querySelector(`.project li[data-id="${obj.id}"]`);
+        target.classList.add('active');
+    },
+    getProjectByID(projectId) {
+        if (typeof projectId === 'string') projectId = parseInt(projectId);
+        let idx = this.projectList.findIndex(project => project.id === projectId);
+        return this.projectList[idx];
+    },
+    showPage: function(obj) {
+        this.pageBody.innerHTML = '';
+        // Create div header
+        let divHead = createHtml({type: 'div', class: 'pageHeader-heading'});
+        let h2Head = createHtml({type: 'h2', text: obj.title});
+        divHead.appendChild(h2Head);
+        this.pageBody.appendChild(divHead);
     }
 }
 
-export default uiPageLoad;
+
+export default uiLoad;

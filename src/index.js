@@ -1,9 +1,6 @@
-import Todo from './modules/todo';
-import Project from './modules/project';
-import './style/style.css';
+import './asset/style/style.css';
 import UserAvatar from './asset/img/user.png';
-import uiPageLoad from './modules/uiLoad';
-import uiProject from './modules/uiProject';
+import uiLoad from './modules/uiLoad';
 
 // Add the user avatar image to our existing user-div.
 const avatarElement = document.querySelector('.user');
@@ -14,9 +11,10 @@ avatarElement.appendChild(myIcon);
 // Add html elements to page when load
 // - nav    | Nav that holds the projects
 // - button | Add new project
-uiPageLoad.init();
+uiLoad.init();
 
 // Add one new project and set it to active
-let firstProject = new Project('First project');
-uiProject.add(firstProject);
-uiProject.setActive(firstProject);
+uiLoad.create('First project');
+let newProject = uiLoad.getProjectByID(1);
+uiLoad.setActive(newProject);
+uiLoad.showPage(newProject);
