@@ -27,35 +27,57 @@ const uiLoad = {
         let btn = document.querySelector('.btn-project');
         btn.addEventListener('click', () => {
             this.showForm();
+            this.removeActive();
         });
     },
-    showForm: function() {
+    showForm: function(obj = false) {
+        let formText = {}
+        if (obj) {
+            formText.h2 = `Edit ${obj.title}`;
+            formText.label = 'Title';
+            formText.input = obj.title;
+            formText.btn = 'Update';
+        } else {
+            formText.h2 = 'Add new Project';
+            formText.label = 'Title';
+            formText.input = '';
+            formText.btn = 'Add';
+        }
+
         this.pageBody.innerHTML = '';
         // Create div header
         let divHead = createHtml({type: 'div', class: 'pageHeader-heading'});
-        let h2Head = createHtml({type: 'h2', text: 'Add new Project'});
+        let h2Head = createHtml({type: 'h2', text: formText.h2});
         divHead.appendChild(h2Head);
         this.pageBody.appendChild(divHead);
 
         // form
         let form = createHtml({type: 'form', attr: [['action', '']]});
         let formDiv = createHtml({type: 'div'});
-        let label = createHtml({type: 'label', attr: [['for', 'projectTitle']], text: 'Add new Project'});
-        let input = createHtml({type: 'input', attr: [['type', 'text'], ['name', 'projectTitle'], ['id', 'projectTitle']]});
-        let subBtn = createHtml({type: 'button', text: 'Create Project', class: 'btn', attr: [['id', 'submitProject']]})
+        let label = createHtml({type: 'label', attr: [['for', 'projectTitle']], text: formText.label });
+        let input = createHtml({type: 'input', attr: [['type', 'text'], ['name', 'projectTitle'], ['id', 'projectTitle'],['value', formText.input]]});
+        let subBtn = createHtml({type: 'button', text: formText.btn, class: 'btn', attr: [['id', 'submitProject']]})
         formDiv.appendChild(label);
         formDiv.appendChild(input);
         form.appendChild(formDiv);
         form.appendChild(subBtn);
         this.pageBody.appendChild(form);
-        this.submitForm();
+
+        (obj) ? this.submitFormEdit(obj) : this.submitFormNew();
     },
-    submitForm: function() {
+    submitFormNew: function() {
         let subBtn = document.querySelector('#submitProject');
         subBtn.addEventListener('click', (e) => {
             e.preventDefault();
             this.create(document.querySelector('#projectTitle').value);
-            this.pageBody.innerHTML = '';
+        });
+    },
+    submitFormEdit: function(obj) {
+        let subBtn = document.querySelector('#submitProject');
+        subBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            obj.title = document.querySelector('#projectTitle').value;
+            this.refreshProject();
         });
     },
     create: function(title) {
@@ -72,6 +94,18 @@ const uiLoad = {
 
         this.navigationEvent();
     },
+    refreshProject: function() {
+        let navUl = document.querySelector('.project');
+        navUl.innerHTML = '';
+        for (let i = 0; i < this.projectList.length; i++) {
+            let li = createHtml({type: 'li', attr: [['data-id', this.projectList[i].id]], class: 'nav-item'});
+            let a = createHtml({type: 'a', attr: [['href', '#']], text: this.projectList[i].title});
+            li.appendChild(a);
+            navUl.appendChild(li);
+        }
+        
+        this.navigationEvent();
+    },
     navigationEvent: function() {
         let navItems = document.querySelectorAll('.project li');
         navItems.forEach(link => {
@@ -84,10 +118,14 @@ const uiLoad = {
     },
     setActive: function(obj) {
         let currentActive = document.querySelector('.active');
-        if (currentActive) currentActive.classList.remove('active');
+        if (currentActive) this.removeActive();
 
         let target = document.querySelector(`.project li[data-id="${obj.id}"]`);
         target.classList.add('active');
+    },
+    removeActive: function() {
+        let currentActive = document.querySelector('.active');
+        currentActive.classList.remove('active');
     },
     getProjectByID(projectId) {
         if (typeof projectId === 'string') projectId = parseInt(projectId);
@@ -99,8 +137,21 @@ const uiLoad = {
         // Create div header
         let divHead = createHtml({type: 'div', class: 'pageHeader-heading'});
         let h2Head = createHtml({type: 'h2', text: obj.title});
+        let projectEdit = createHtml({type: 'button', class: 'btn', text: 'Edit project', attr: [['id', 'editProject']]});
         divHead.appendChild(h2Head);
+        divHead.appendChild(projectEdit);
         this.pageBody.appendChild(divHead);
+
+        let divBody = createHtml({type: 'div', class: 'page-body'})
+        this.pageBody.appendChild(divBody);
+
+        this.pageEvent(obj);
+    },
+    pageEvent: function(obj){
+        let editProject = document.querySelector('#editProject');
+        editProject.addEventListener('click', () => {
+            this.showForm(obj);
+        });
     }
 }
 
