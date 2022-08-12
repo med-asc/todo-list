@@ -78,6 +78,8 @@ const uiLoad = {
             e.preventDefault();
             obj.title = document.querySelector('#projectTitle').value;
             this.refreshProject();
+            this.setActive(obj);
+            this.showPage(obj);
         });
     },
     create: function(title) {
