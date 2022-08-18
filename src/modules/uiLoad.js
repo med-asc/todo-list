@@ -1,5 +1,6 @@
 import { createHtml } from "./htmlGen";
 import Project from "./project";
+import Todo from "./todo";
 
 // Creates elements that are required for the page
 const uiLoad = {
@@ -144,16 +145,145 @@ const uiLoad = {
         divHead.appendChild(projectEdit);
         this.pageBody.appendChild(divHead);
 
-        let divBody = createHtml({type: 'div', class: 'page-body'})
+        let btnAdd = createHtml({type: 'button', class: 'btn', text: 'Add Todo', attr: [['id', 'addTodo']]});
+        this.pageBody.appendChild(btnAdd);
+
+        let divBody = createHtml({type: 'div', class: 'page-body'});
+        
+        obj.list.forEach((item) => {
+            let divTodo = createHtml({type: 'div', class: 'row-item'});
+            let divTitle = createHtml({type: 'div', class: 'row-title'})
+            let check = createHtml({type: 'input', attr: [['type', 'checkbox']], class: 'lg-check'});
+            let title = createHtml({type: 'p', text: item.title});
+            let priority = createHtml({type: 'span', text: item.priority, class: `priority priority-${item.priority}`});
+            let dueDate = createHtml({type: 'span', text: item.date, class: 'due-date'});
+            divTitle.appendChild(check);
+            divTitle.appendChild(title);
+            divTitle.appendChild(priority);
+    
+            divTodo.appendChild(divTitle);
+            divTodo.appendChild(dueDate);
+            divBody.appendChild(divTodo);
+        })
+        
         this.pageBody.appendChild(divBody);
 
         this.pageEvent(obj);
+
     },
     pageEvent: function(obj){
         let editProject = document.querySelector('#editProject');
         editProject.addEventListener('click', () => {
             this.showForm(obj);
         });
+        
+        let addTodo = document.querySelector('#addTodo');
+        addTodo.addEventListener('click', () => {
+            this.showFormTodo();
+
+        });
+    },
+    showFormTodo: function(obj = false) {
+        let formText = {}
+        formText.h2 = 'Create new Todo';
+        formText.label = 'Title';
+        formText.input = '';
+        formText.label2 = 'Description';
+        formText.label3 = 'Due date';
+        formText.label4 = 'Priority';
+        formText.btn = 'Add';
+
+        this.pageBody.innerHTML = '';
+        // Create div header
+        let divHead = createHtml({type: 'div', class: 'pageHeader-heading'});
+        let h2Head = createHtml({type: 'h2', text: formText.h2});
+        divHead.appendChild(h2Head);
+        this.pageBody.appendChild(divHead);
+
+        // form
+        let form = createHtml({type: 'form', attr: [['action', '']]});
+
+        let formDiv = createHtml({type: 'div'});
+        let label = createHtml({type: 'label', attr: [['for', 'todoTitle']], text: formText.label });
+        let input = createHtml({type: 'input', attr: [['type', 'text'], ['name', 'todoTitle'], ['id', 'todoTitle'],['value', formText.input]]});
+
+        formDiv.appendChild(label);
+        formDiv.appendChild(input);
+        form.appendChild(formDiv);
+        
+        let formDiv2 = createHtml({type: 'div'});
+        let label2 = createHtml({type: 'label', attr: [['for', 'todoDesc']], text: formText.label2 });
+        let input2 = createHtml({type: 'textarea', attr: [['name', 'desc'], ['id', 'todoDesc'], ['cols', '92'], ['rows', '10']]});
+        
+        formDiv2.appendChild(label2);
+        formDiv2.appendChild(input2);
+        form.appendChild(formDiv2);
+
+        let formDiv3 = createHtml({type: 'div'});
+        let label3 = createHtml({type: 'label', attr: [['for', 'todoDate']], text: formText.label3 });
+        let input3 = createHtml({type: 'input', attr: [['type', 'date'], ['name', 'todoDate'], ['id', 'todoDate']]});
+
+        formDiv3.appendChild(label3);
+        formDiv3.appendChild(input3);
+        form.appendChild(formDiv3);
+
+        let formDiv4 = createHtml({type: 'div'});
+        let label4 = createHtml({type: 'label', attr: [['for', 'todoPriority']], text: formText.label4});
+        formDiv4.appendChild(label4);
+
+        let formDivCheck1 = createHtml({type: 'div', class: 'checkbox-item'});
+        let inputLow = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'lowPrio'], ['name', 'priority'], ['value', 'low']]});
+        let labelLow = createHtml({type: 'label', attr: [['for', 'lowPrio']], text: 'Low priority'});
+
+        formDivCheck1.appendChild(inputLow);
+        formDivCheck1.appendChild(labelLow);
+        formDiv4.appendChild(formDivCheck1);
+
+        let formDivCheck2 = createHtml({type: 'div', class: 'checkbox-item'});
+        let inputMed = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'medPrio'], ['name', 'priority'], ['value', 'medium']]});
+        let labelMed = createHtml({type: 'label', attr: [['for', 'medPrio']], text: 'Medium priority'});
+
+        formDivCheck2.appendChild(inputMed);
+        formDivCheck2.appendChild(labelMed);
+        formDiv4.appendChild(formDivCheck2);
+
+        let formDivCheck3 = createHtml({type: 'div', class: 'checkbox-item'});
+        let inputHigh = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'highPrio'], ['name', 'priority'], ['value', 'high']]});
+        let labelHigh = createHtml({type: 'label', attr: [['for', 'highPrio']], text: 'High priority'});
+
+        formDivCheck3.appendChild(inputHigh);
+        formDivCheck3.appendChild(labelHigh);
+        formDiv4.appendChild(formDivCheck3);
+
+        form.appendChild(formDiv4);
+
+        let subBtn = createHtml({type: 'button', text: formText.btn, class: 'btn', attr: [['id', 'submitTodo']]})
+        form.appendChild(subBtn);
+        this.pageBody.appendChild(form);
+
+        this.submitTodoFormNew();
+    },
+    submitTodoFormNew: function() {
+        let subBtn = document.querySelector('#submitTodo');
+        subBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            let title = document.querySelector('#todoTitle').value;
+            let description = document.querySelector('#todoDesc').value;
+            let date = document.querySelector('#todoDate').value;
+            let priority = document.querySelector('input[name="priority"]:checked').value;
+
+            this.createTodo(title, description, date, priority);
+        });
+    },
+    createTodo: function(title, description, date, priority) {
+        let newTodo = new Todo(title, description, date, priority);
+
+        let projectId = document.querySelector('.active').getAttribute('data-id');
+        let projectObj = this.getProjectByID(projectId);
+
+        projectObj.addToList(newTodo);
+        this.showPage(projectObj);
     }
 }
 
