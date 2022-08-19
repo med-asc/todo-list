@@ -155,11 +155,18 @@ const uiLoad = {
 
         let divBody = createHtml({type: 'div', class: 'page-body'});
         
+        obj.list = obj.list.sort((last, next) => {
+            return last.done === true ? 1 : -1;
+        });
         obj.list.forEach((item) => {
             let divTodo = createHtml({type: 'div', class: 'row-item', attr: [['data-id', item.id]]});
+            if (item.done) divTodo = createHtml({type: 'div', class: 'row-item row-done', attr: [['data-id', item.id]]});
             let divHead = createHtml({type: 'div', class: 'row-heading'});
             let divTitle = createHtml({type: 'div', class: 'row-title'})
-            let check = createHtml({type: 'input', attr: [['type', 'checkbox']], class: 'lg-check'});
+
+            let check = createHtml({type: 'input', attr: [['type', 'checkbox'], ['id', item.id]], class: 'lg-check'});
+            if (item.done) check = createHtml({type: 'input', attr: [['type', 'checkbox'], ['id', item.id], ['checked', 'checked']], class: 'lg-check'});
+
             let title = createHtml({type: 'p', text: item.title});
             let priority = createHtml({type: 'span', text: item.priority, class: `priority priority-${item.priority}`});
             let dueDate = createHtml({type: 'span', text: item.date, class: 'due-date'});
@@ -194,6 +201,19 @@ const uiLoad = {
         showTodo.forEach((item) => {
             item.addEventListener('click', () => {
                 this.showTodoDetails(item, obj.id);
+            });
+        });
+
+        let checkbox = document.querySelectorAll('.lg-check');
+        checkbox.forEach((box) => {
+            box.addEventListener('change', () => {
+                let todoObj = this.getTodoByID(box.getAttribute('id'), obj);
+                if (box.checked) {
+                    todoObj.done = true;
+                } else {
+                    todoObj.done = false;
+                }
+                this.showPage(obj);
             });
         });
     },

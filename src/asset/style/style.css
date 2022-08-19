@@ -171,6 +171,10 @@ main {
     border-bottom: 1px solid var(--color-blue);
 }
 
+.row-done {
+    text-decoration: line-through;
+}
+
 .row-heading {
     display: flex;
     justify-content: space-between;

@@ -5,6 +5,7 @@ class Todo {
         this._description = description;
         this._date = date;
         this._priority = priority;
+        this._done = false;
     }
 
     get id() {
@@ -41,6 +42,14 @@ class Todo {
 
     set priority(value) {
         this._priority = value;
+    }
+
+    get done() {
+        return this._done;
+    }
+
+    set done(bool) {
+        this._done = bool;
     }
 }
 
