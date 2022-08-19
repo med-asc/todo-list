@@ -199,13 +199,29 @@ const uiLoad = {
     },
     showFormTodo: function(obj = false) {
         let formText = {}
-        formText.h2 = 'Create new Todo';
-        formText.label = 'Title';
-        formText.input = '';
-        formText.label2 = 'Description';
-        formText.label3 = 'Due date';
-        formText.label4 = 'Priority';
-        formText.btn = 'Add';
+        if (obj) {
+            formText.h2 = `Edit ${obj.title}`;
+            formText.label = 'Title';
+            formText.input = obj.title;
+            formText.label2 = 'Description';
+            formText.desc = obj.description;
+            formText.label3 = 'Due date';
+            formText.date = obj.date;
+            formText.label4 = 'Priority';
+            formText.prio = obj.priority;
+            formText.btn = 'Update';
+        } else {
+            formText.h2 = 'Create new Todo';
+            formText.label = 'Title';
+            formText.input = '';
+            formText.label2 = 'Description';
+            formText.desc = '';
+            formText.label3 = 'Due date';
+            formText.date = '';
+            formText.label4 = 'Priority';
+            formText.prio = '';
+            formText.btn = 'Add';
+        }
 
         this.pageBody.innerHTML = '';
         // Create div header
@@ -227,7 +243,7 @@ const uiLoad = {
         
         let formDiv2 = createHtml({type: 'div'});
         let label2 = createHtml({type: 'label', attr: [['for', 'todoDesc']], text: formText.label2 });
-        let input2 = createHtml({type: 'textarea', attr: [['name', 'desc'], ['id', 'todoDesc'], ['cols', '92'], ['rows', '10']]});
+        let input2 = createHtml({type: 'textarea', text: formText.desc ,attr: [['name', 'desc'], ['id', 'todoDesc'], ['cols', '92'], ['rows', '10']]});
         
         formDiv2.appendChild(label2);
         formDiv2.appendChild(input2);
@@ -235,7 +251,7 @@ const uiLoad = {
 
         let formDiv3 = createHtml({type: 'div'});
         let label3 = createHtml({type: 'label', attr: [['for', 'todoDate']], text: formText.label3 });
-        let input3 = createHtml({type: 'input', attr: [['type', 'date'], ['name', 'todoDate'], ['id', 'todoDate']]});
+        let input3 = createHtml({type: 'input', attr: [['type', 'date'], ['name', 'todoDate'], ['id', 'todoDate'], ['value', formText.date]]});
 
         formDiv3.appendChild(label3);
         formDiv3.appendChild(input3);
@@ -248,6 +264,7 @@ const uiLoad = {
         let formDivCheck1 = createHtml({type: 'div', class: 'checkbox-item'});
         let inputLow = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'lowPrio'], ['name', 'priority'], ['value', 'low']]});
         let labelLow = createHtml({type: 'label', attr: [['for', 'lowPrio']], text: 'Low priority'});
+        if (obj.priority === 'low') inputLow.setAttribute('checked', 'checked');
 
         formDivCheck1.appendChild(inputLow);
         formDivCheck1.appendChild(labelLow);
@@ -256,6 +273,7 @@ const uiLoad = {
         let formDivCheck2 = createHtml({type: 'div', class: 'checkbox-item'});
         let inputMed = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'medPrio'], ['name', 'priority'], ['value', 'medium']]});
         let labelMed = createHtml({type: 'label', attr: [['for', 'medPrio']], text: 'Medium priority'});
+        if (obj.priority === 'medium') inputMed.setAttribute('checked', 'checked');
 
         formDivCheck2.appendChild(inputMed);
         formDivCheck2.appendChild(labelMed);
@@ -264,6 +282,7 @@ const uiLoad = {
         let formDivCheck3 = createHtml({type: 'div', class: 'checkbox-item'});
         let inputHigh = createHtml({type: 'input', attr: [['type', 'radio'], ['id', 'highPrio'], ['name', 'priority'], ['value', 'high']]});
         let labelHigh = createHtml({type: 'label', attr: [['for', 'highPrio']], text: 'High priority'});
+        if (obj.priority === 'high') inputHigh.setAttribute('checked', 'checked');
 
         formDivCheck3.appendChild(inputHigh);
         formDivCheck3.appendChild(labelHigh);
@@ -275,7 +294,8 @@ const uiLoad = {
         form.appendChild(subBtn);
         this.pageBody.appendChild(form);
 
-        this.submitTodoFormNew();
+        (obj) ? this.submitTodoFormEdit(obj) : this.submitTodoFormNew();
+        
     },
     submitTodoFormNew: function() {
         let subBtn = document.querySelector('#submitTodo');
@@ -288,6 +308,21 @@ const uiLoad = {
             let priority = document.querySelector('input[name="priority"]:checked').value;
 
             this.createTodo(title, description, date, priority);
+        });
+    },
+    submitTodoFormEdit: function(obj) {
+        let subBtn = document.querySelector('#submitTodo');
+        subBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            obj.title = document.querySelector('#todoTitle').value;
+            obj.description = document.querySelector('#todoDesc').value;
+            obj.date = document.querySelector('#todoDate').value;
+            obj.priority = document.querySelector('input[name="priority"]:checked').value;
+
+            let projectId = document.querySelector('.active').getAttribute('data-id');
+            let projectObj = this.getProjectByID(projectId);
+            this.showPage(projectObj);
         });
     },
     createTodo: function(title, description, date, priority) {
@@ -309,8 +344,20 @@ const uiLoad = {
 
         let div = createHtml({type: 'div', class: 'row-details'});
         let desc = createHtml({type: 'p', text: todoObj.description});
+        let btn = createHtml({type: 'button', text: 'Edit Todo', class: 'btn btn-todo'});
         div.appendChild(desc);
+        div.appendChild(btn);
         item.appendChild(div);
+
+        this.editTodoEvent(projectObj, todoObj);
+    },
+    editTodoEvent: function(project, todo) {
+        let btn = document.querySelector('.btn-todo');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                this.showFormTodo(todo);
+            });
+        }
     }
 }
 

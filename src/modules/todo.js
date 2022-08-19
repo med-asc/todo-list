@@ -15,16 +15,32 @@ class Todo {
         return this._title;
     }
 
+    set title(value) {
+        this._title = value;
+    }
+
     get description() {
         return this._description;
+    }
+
+    set description(value) {
+        this._description = value;
     }
 
     get date() {
         return this._date;
     }
 
+    set date(value) {
+        this._date = value;
+    }
+
     get priority() {
         return this._priority;
+    }
+
+    set priority(value) {
+        this._priority = value;
     }
 }
 
