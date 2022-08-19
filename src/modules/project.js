@@ -10,6 +10,11 @@ class Project {
         this.list.push(obj);
     }
 
+    removeFromList(todoId) {
+        let idx = this.list.findIndex(todo => todo.id === todoId);
+        this.list.splice(idx, 1);
+    }
+
     get id() {
         return this._id;
     }

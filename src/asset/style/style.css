@@ -119,8 +119,16 @@ body {
     background: var(--color-yellow);
 }
 
+.btn-red {
+    background-color: var(--color-red);
+}
+
 .btn:hover {
     background-color: rgb(252, 211, 144);
+}
+
+.btn-red:hover {
+    background-color: rgb(250, 90, 96);
 }
 
 .btn-project {

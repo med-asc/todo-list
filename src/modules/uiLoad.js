@@ -312,6 +312,10 @@ const uiLoad = {
 
         let subBtn = createHtml({type: 'button', text: formText.btn, class: 'btn', attr: [['id', 'submitTodo']]})
         form.appendChild(subBtn);
+        if (obj) {
+            let delBtn = createHtml({type: 'button', text: 'Delete', class: 'btn btn-red', attr: [['id', 'deleteTodo']]})
+            form.appendChild(delBtn);
+        }
         this.pageBody.appendChild(form);
 
         (obj) ? this.submitTodoFormEdit(obj) : this.submitTodoFormNew();
@@ -332,6 +336,16 @@ const uiLoad = {
     },
     submitTodoFormEdit: function(obj) {
         let subBtn = document.querySelector('#submitTodo');
+        let delBtn = document.querySelector('#deleteTodo');
+
+        delBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let projectId = document.querySelector('.active').getAttribute('data-id');
+            let projectObj = this.getProjectByID(projectId);
+            projectObj.removeFromList(obj.id);
+            this.showPage(projectObj);
+        });
+
         subBtn.addEventListener('click', (e) => {
             e.preventDefault();
 
