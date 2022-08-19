@@ -135,6 +135,11 @@ const uiLoad = {
         let idx = this.projectList.findIndex(project => project.id === projectId);
         return this.projectList[idx];
     },
+    getTodoByID(todoId, obj) {
+        if (typeof todoId === 'string') todoId = parseInt(todoId);
+        let idx = obj.list.findIndex(todo => todo.id === todoId);
+        return obj.list[idx];
+    },
     showPage: function(obj) {
         this.pageBody.innerHTML = '';
         // Create div header
@@ -151,7 +156,8 @@ const uiLoad = {
         let divBody = createHtml({type: 'div', class: 'page-body'});
         
         obj.list.forEach((item) => {
-            let divTodo = createHtml({type: 'div', class: 'row-item'});
+            let divTodo = createHtml({type: 'div', class: 'row-item', attr: [['data-id', item.id]]});
+            let divHead = createHtml({type: 'div', class: 'row-heading'});
             let divTitle = createHtml({type: 'div', class: 'row-title'})
             let check = createHtml({type: 'input', attr: [['type', 'checkbox']], class: 'lg-check'});
             let title = createHtml({type: 'p', text: item.title});
@@ -161,8 +167,9 @@ const uiLoad = {
             divTitle.appendChild(title);
             divTitle.appendChild(priority);
     
-            divTodo.appendChild(divTitle);
-            divTodo.appendChild(dueDate);
+            divHead.appendChild(divTitle);
+            divHead.appendChild(dueDate);
+            divTodo.appendChild(divHead);
             divBody.appendChild(divTodo);
         })
         
@@ -181,6 +188,13 @@ const uiLoad = {
         addTodo.addEventListener('click', () => {
             this.showFormTodo();
 
+        });
+
+        let showTodo = document.querySelectorAll('.row-item');
+        showTodo.forEach((item) => {
+            item.addEventListener('click', () => {
+                this.showTodoDetails(item, obj.id);
+            });
         });
     },
     showFormTodo: function(obj = false) {
@@ -284,6 +298,19 @@ const uiLoad = {
 
         projectObj.addToList(newTodo);
         this.showPage(projectObj);
+    },
+    showTodoDetails: function(item, projectId) {
+        let id = item.getAttribute('data-id');
+        let projectObj = this.getProjectByID(projectId);
+        let todoObj = this.getTodoByID(id, projectObj);
+
+        let divInfo = document.querySelector('.row-details');
+        if (divInfo) divInfo.remove();
+
+        let div = createHtml({type: 'div', class: 'row-details'});
+        let desc = createHtml({type: 'p', text: todoObj.description});
+        div.appendChild(desc);
+        item.appendChild(div);
     }
 }
 
