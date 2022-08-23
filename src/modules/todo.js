@@ -1,62 +1,66 @@
-class Todo {
-    constructor(title, description, date = false, priority = 'low') {
-        this._id = idCounter();
-        this._title = title;
-        this._description = description;
-        this._date = date;
-        this._priority = priority;
-        this._done = false;
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    get title() {
-        return this._title;
-    }
-
-    set title(value) {
-        this._title = value;
-    }
-
-    get description() {
-        return this._description;
-    }
-
-    set description(value) {
-        this._description = value;
-    }
-
-    get date() {
-        return this._date;
-    }
-
-    set date(value) {
-        this._date = value;
-    }
-
-    get priority() {
-        return this._priority;
-    }
-
-    set priority(value) {
-        this._priority = value;
-    }
-
-    get done() {
-        return this._done;
-    }
-
-    set done(bool) {
-        this._done = bool;
-    }
-}
-
 let id = 0;
 function idCounter() {
-    ++id
-    return id; 
+  id += 1;
+  return id;
+}
+
+class Todo {
+  constructor(title, description, date = false, priority = 'low') {
+    this.todoId = idCounter();
+    this.todoTitle = title;
+    this.todoDescription = description;
+    this.todoDate = date;
+    this.todoPriority = priority;
+    this.todoDone = false;
+  }
+
+  get id() {
+    return this.todoId;
+  }
+
+  set id(value) {
+    this.todoId = value;
+  }
+
+  get title() {
+    return this.todoTitle;
+  }
+
+  set title(value) {
+    this.todoTitle = value;
+  }
+
+  get description() {
+    return this.todoDescription;
+  }
+
+  set description(value) {
+    this.todoDescription = value;
+  }
+
+  get date() {
+    return this.todoDate;
+  }
+
+  set date(value) {
+    this.todoDate = value;
+  }
+
+  get priority() {
+    return this.todoPriority;
+  }
+
+  set priority(value) {
+    this.todoPriority = value;
+  }
+
+  get done() {
+    return this.todoDone;
+  }
+
+  set done(bool) {
+    this.todoDone = bool;
+  }
 }
 
 export default Todo;

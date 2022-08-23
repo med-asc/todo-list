@@ -15,6 +15,6 @@ uiLoad.init();
 
 // Add one new project and set it to active
 uiLoad.create('First project');
-let newProject = uiLoad.getProjectByID(1);
+const newProject = uiLoad.getProjectByID(1);
 uiLoad.setActive(newProject);
 uiLoad.showPage(newProject);

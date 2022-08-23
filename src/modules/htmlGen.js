@@ -7,13 +7,11 @@
 // }
 
 function createHtml(arr) {
-    let element = document.createElement(arr.type);
-    if (arr.class) arr.class.split(' ').forEach((c) => element.classList.add(c));
-    if (arr.text) element.textContent = arr.text;
-    if (arr.attr) arr.attr.forEach((row) => element.setAttribute(row[0], row[1]));
-    return element;
+  const element = document.createElement(arr.type);
+  if (arr.class) arr.class.split(' ').forEach((c) => element.classList.add(c));
+  if (arr.text) element.textContent = arr.text;
+  if (arr.attr) arr.attr.forEach((row) => element.setAttribute(row[0], row[1]));
+  return element;
 }
 
-export {
-    createHtml
-}
+export default createHtml;
